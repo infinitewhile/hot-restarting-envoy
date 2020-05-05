@@ -16,13 +16,15 @@ trap cleanup EXIT
 echo "Running container $CONTAINER_NAME..."
 
 docker run \
-    -d \
+	-d \
 	--name $CONTAINER_NAME \
 	-p 10000:10000 \
 	-p 9901:9901 \
 	-v $(pwd)/proxy_config.v2.yaml:/etc/envoy/envoy.yaml \
 	hot-restarting-envoy:v1.14.1
 
+echo "\nEnvoy container is running. Open http://localhost:10000"
+
 # Watch for config file changes and reload
-echo "Starting to watch proxy_config.v2.yaml for changes..."
+echo "\nStarting to watch proxy_config.v2.yaml for changes..."
 fswatch -0 proxy_config.v2.yaml | xargs -0 -I {} ./reload-config.sh
